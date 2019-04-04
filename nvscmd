@@ -63,6 +63,8 @@ if ( $cond == $n ) then
     shift
 endif
 
+set gpunum = $1
+shift
 
 if ("x$1" == "xrun_forever") then
     @ run_forever = 1
@@ -79,7 +81,7 @@ if ("x$1" == "x" || "x$1" == "xstart" || "x$1" == "x-display") then
     # this means "use heuristic"
     @ target = -3
 else
-    @ target = $1
+    @ target = $1 
 endif
 
 if ("x$1" != "x" && "x$1" != "x-display") then
@@ -95,7 +97,7 @@ loop:
 
     if ($target == -3) then
         # execute heuristic
-        set foo = (`/opt/bin/nvidia-smi dmon -s p -c 1 ${gpuid}| tail -1`)
+        set foo = (`/usr/bin/nvidia-smi dmon -s p -c 1 ${gpuid}| tail -1`)
         @ temp = $foo[3]
         @ target = -2
         if (${temp} < 30) then
@@ -148,12 +150,12 @@ loop:
     if (${last_target} != ${target} && ${last_friendly_target} != ${target}) then
         # relinquish fan speed control back to the system
         if ("x${target}" == "x-1") then
-            /usr/bin/nvidia-settings -a '[gpu:0]/GPUFanControlState=0'  $*
+            /usr/bin/nvidia-settings -a '[gpu:'${gpunum}']/GPUFanControlState=0'  $*
         endif
     
         # set fan speed on primary GPU to target
         if (${target} >= 0) then
-            /usr/bin/nvidia-settings -a '[gpu:0]/GPUFanControlState=1' -a '[fan:0]/GPUTargetFanSpeed='${target}  $*
+            /usr/bin/nvidia-settings -a '[gpu:'${gpunum}']/GPUFanControlState=1' -a '[fan:'${gpunum}']/GPUTargetFanSpeed='${target}  $*
         endif
     endif
 

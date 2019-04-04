@@ -37,19 +37,20 @@
 # to eek out a few percent more perf with very noticeable but still
 # tolerable fan noise).
 
-dir=/home/liuk/src/set_gpu_fans_public
+dir=/opt/set-gpu-fans
 
-/opt/bin/nvidia-smi -pm 1
+/usr/bin/nvidia-smi -pm 1
 
 # we need to launch the X server once for each display
 # making each of the PCI IDs the primary device in turn.
-
 # get PCI bus ids of Nvidia cards and convert from hexadecimal to decimal. watch out for the falling toothpicks.
+
 pciid=`lspci  | sed -n -e '/VGA compatib.*NVIDIA/s/^\(..\):\(..\).\(.\).*/printf "PCI:%d:%d:%d\\\\\\\\n" 0x\1 0x\2 0x\3;/p'`
 disp=0
 sar=(`eval ${pciid}`)
 gpuid=`lspci  | sed -n -e '/VGA compatib.*NVIDIA/s/^\(..\):\(..\).\(.\).*/\1:\2.\3/p'`
 sgar=(${gpuid})
+SHELL=/bin/tcsh
 for i in "${!sar[@]}"; do
     cfg=`mktemp /tmp/xorg-XXXXXXXX.conf`
     sed -e s,@GPU_BUS_ID@,${sar[$i]},    \
@@ -57,10 +58,13 @@ for i in "${!sar[@]}"; do
         ${dir}/xorg.conf >> ${cfg}
     # we keep one X server per GPU running indefinitely
     # (if we let the X server die, the fan config does not persist, no matter what else)
-    xinit ${dir}/nvscmd ${sgar[$i]} run_forever -- :${disp} -once -config ${cfg} &
-    echo "xinit ${dir}/nvscmd ${sgar[$i]} run_forever -- :${disp} -once -config ${cfg}"
+    echo ${sgar[$i]}
+    sudo -s eval "${dir}/nvscmd ${sgar[$i]} ${disp} run_forever &" >> log.txt
+    # xinit ${dir}/nvscmd ${sgar[$i]} stop -- :${disp} -once -config ${cfg} &
+    # xinit ${dir}/nvscmd ${sgar[$i]} 65 -- :${disp} -once -config ${cfg} &
+    echo "${dir}/nvscmd ${sgar[$i]} ${disp} run_forever &"
     disp=$((disp+1))
     sleep 10
-    rm -f ${cfg}
+    rm -f ${cfg}    
 done
 
