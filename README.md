@@ -12,6 +12,7 @@ For installation and usage, read the comments in cool_gpu.
 `export DISPLAY=:0`
 
 ## Run cool_gpu
+`sudo git clone https://github.com/marcocannici/set_gpu_fans_public.git /opt/set-gpu-fans`
 `sudo cool_gpu &`
 
 ## temp of multi-gpu is individually obtained and adjusted 
