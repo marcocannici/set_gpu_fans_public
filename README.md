@@ -8,11 +8,11 @@ For installation and usage, read the comments in cool_gpu.
 `sudo nvidia-xconfig -a --use-display-device=None --virtual=1280x1024 --enable-all-gpus --cool-bits=12`
 - Start X:
 `sudo /usr/bin/X :0 &`
+
+## Run cool_gpus
+- `sudo git clone https://github.com/marcocannici/set_gpu_fans_public.git /opt/set-gpu-fans`
 - Export DISPLAY:
 `export DISPLAY=:0`
-
-## Run cool_gpu
-- `sudo git clone https://github.com/marcocannici/set_gpu_fans_public.git /opt/set-gpu-fans`
 - `sudo cool_gpu &`
 
 ## temp of multi-gpu is individually obtained and adjusted 
