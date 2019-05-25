@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+export DISPLAY=:0
+
+# X Configuration
+# ---------------
+
+# create X server config file
+nvidia-xconfig -a --use-display-device=None --virtual=1280x1024 --enable-all-gpus --cool-bits=12
+# stop X service
+service lightdm stop
+# restart X
+/usr/bin/X :0 &
+# wait for X to start
+sleep 5
+
+
+# GPUs configurtion
+# -----------------
+
+# set GPUs in persistence mode
+/usr/bin/nvidia-smi -pm 1
+# set GPUs power limit to 180W
+nvidia-smi -pl 180
+# run gpu fan speed control script
+/opt/gpu-fans-control/cool_gpu
+

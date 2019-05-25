@@ -15,6 +15,11 @@ For installation and usage, read the comments in cool_gpu.
 `export DISPLAY=:0`
 - `sudo cool_gpu &`
 
+## Configure start-up script
+- `sudo cp gpu-autoconfig /usr/local/sbin`
+- `sudo vim /etc/rc.local`
+- Add `/usr/local/sbin/gpu-autoconfig &` before `exit 0`
+
 ## temp of multi-gpu is individually obtained and adjusted 
 ```bash
   liuk@acgpu1 ~ $ nvidia-smi 
